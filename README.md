@@ -107,6 +107,24 @@ B. The warning message "Failed to find match for field 'time'." means the timest
 
 C. We recommend to set the **extrinsic_est_en** to false if the extrinsic is give. As for the extrinsic initiallization, please refer to our recent work: [**Robust Real-time LiDAR-inertial Initialization**](https://github.com/hku-mars/LiDAR_IMU_Init).
 
+### Runtime status
+
+This fork publishes an initial `std_msgs/msg/String` value on
+`/fast_lio/status`, then updates it once for each processed LiDAR scan. The
+publisher uses reliable, transient-local QoS with a depth of one. Possible
+values are:
+
+- `initializing`: IMU/map initialization is still in progress.
+- `waiting_for_points`: the current scan does not contain enough usable points.
+- `tracking`: at least one effective point-to-plane measurement was used by the
+  iterated filter for the current scan.
+- `no_effective_points`: the map exists, but the current scan produced no
+  effective point-to-plane measurements.
+
+`tracking` reports that a LiDAR update was usable; it is not an absolute
+accuracy or convergence guarantee. The mapping launch file starts with RViz
+disabled by default. Pass `rviz:=true` when the bundled RViz session is wanted.
+
 ### 3.1 Run use ros launch
 Connect to your PC to Livox LiDAR by following  [Livox-ros-driver2 installation](https://github.com/Livox-SDK/livox_ros_driver2), then
 ```bash
